@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Exponential Chain Rule Practice Applet</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #44464d;
+      --muted: #656a74;
+      --panel: #e8edf7;
+      --line: #6278b7;
+      --button: #24458f;
+      --button-hover: #1d397a;
+      --paper: #ffffff;
+      --check: #6c6f78;
+      --answer: #2f5f52;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      margin: 0;
+      background: #f4f6f9;
+      color: var(--ink);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      display: grid;
+      place-items: center;
+      padding: 10px;
+    }
+
+    .applet {
+      width: min(1370px, 100%);
+      min-height: min(540px, calc(100vh - 20px));
+      display: grid;
+      grid-template-rows: 150px minmax(170px, auto) 1fr;
+      border: 2px solid #888d95;
+      background: var(--paper);
+      overflow: hidden;
+    }
+
+    .band {
+      display: grid;
+      align-items: center;
+      padding: clamp(28px, 4vw, 60px);
+      background: var(--panel);
+    }
+
+    .top {
+      border-bottom: 4px solid var(--line);
+    }
+
+    .question-band {
+      display: grid;
+      align-items: center;
+      padding: clamp(34px, 4.5vw, 62px);
+      border-bottom: 4px solid var(--line);
+      background: #fff;
+    }
+
+    .answer-band {
+      align-content: start;
+      gap: 22px;
+      min-height: 210px;
+      border-top: 0;
+    }
+
+    button {
+      justify-self: start;
+      min-height: 62px;
+      padding: 10px 24px;
+      border: 0;
+      border-radius: 7px;
+      background: var(--button);
+      color: #fff;
+      font: 700 clamp(1.25rem, 2.8vw, 2.25rem) Arial, Helvetica, sans-serif;
+      letter-spacing: 0;
+      cursor: pointer;
+      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.18);
+    }
+
+    button:hover {
+      background: var(--button-hover);
+    }
+
+    button:focus-visible,
+    input:focus-visible {
+      outline: 4px solid rgba(36, 69, 143, 0.28);
+      outline-offset: 3px;
+    }
+
+    .question {
+      margin: 0;
+      font: 700 clamp(1.65rem, 3.3vw, 2.75rem) Georgia, "Times New Roman", serif;
+      line-height: 1.25;
+      color: var(--ink);
+    }
+
+    .math {
+      font-family: Georgia, "Times New Roman", serif;
+      font-style: italic;
+      white-space: nowrap;
+    }
+
+    .toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 22px;
+      width: fit-content;
+      color: var(--ink);
+      font: 700 clamp(1.35rem, 2.8vw, 2.4rem) Arial, Helvetica, sans-serif;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .toggle input {
+      width: clamp(48px, 5vw, 60px);
+      height: clamp(48px, 5vw, 60px);
+      margin: 0;
+      accent-color: var(--button);
+      cursor: pointer;
+    }
+
+    .answer {
+      display: none;
+      max-width: 980px;
+      padding-left: clamp(70px, 8vw, 110px);
+      color: var(--answer);
+      font-size: clamp(1.25rem, 2.3vw, 2rem);
+      line-height: 1.45;
+    }
+
+    .answer.visible {
+      display: grid;
+      gap: 10px;
+    }
+
+    .answer-line {
+      font: 700 clamp(1.45rem, 2.8vw, 2.35rem) Georgia, "Times New Roman", serif;
+      font-style: italic;
+    }
+
+    .frac {
+      display: inline-grid;
+      grid-template-rows: 1fr auto 1fr;
+      align-items: center;
+      justify-items: center;
+      margin-right: 10px;
+      vertical-align: middle;
+      font-style: normal;
+      line-height: 1;
+    }
+
+    .frac::before {
+      content: "";
+      grid-row: 2;
+      width: 100%;
+      border-top: 2px solid currentColor;
+    }
+
+    .frac .top-frac {
+      grid-row: 1;
+      padding: 0 4px 3px;
+    }
+
+    .frac .bottom-frac {
+      grid-row: 3;
+      padding: 3px 4px 0;
+    }
+
+    .note {
+      margin: 0;
+      color: var(--muted);
+      font-size: clamp(1rem, 1.7vw, 1.35rem);
+    }
+
+    @media (max-width: 700px) {
+      body {
+        padding: 6px;
+      }
+
+      .applet {
+        grid-template-rows: auto auto 1fr;
+      }
+
+      .band,
+      .question-band {
+        padding: 24px;
+      }
+
+      button {
+        width: 100%;
+      }
+
+      .answer {
+        padding-left: 0;
+      }
+
+      .math {
+        white-space: normal;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="applet" aria-label="Exponential chain rule derivative practice">
+    <section class="band top">
+      <button id="newQuestion" type="button">Click here for a new question</button>
+    </section>
+
+    <section class="question-band" aria-live="polite">
+      <p class="question" id="questionText">What is the derivative of <span class="math">y = 7e<sup>-3x-8</sup></span> ?</p>
+    </section>
+
+    <section class="band answer-band">
+      <label class="toggle">
+        <input id="showAnswer" type="checkbox" aria-controls="answerBox">
+        <span>Show the answer</span>
+      </label>
+
+      <div class="answer" id="answerBox" aria-live="polite">
+        <div class="answer-line" id="answerText"></div>
+        <p class="note" id="reasonText"></p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const questionText = document.querySelector("#questionText");
+    const answerText = document.querySelector("#answerText");
+    const reasonText = document.querySelector("#reasonText");
+    const answerBox = document.querySelector("#answerBox");
+    const showAnswer = document.querySelector("#showAnswer");
+    const newQuestion = document.querySelector("#newQuestion");
+
+    const state = {
+      a: -3,
+      b: -8,
+      c: 7
+    };
+
+    function randomChoice(values) {
+      return values[Math.floor(Math.random() * values.length)];
+    }
+
+    function generateQuestion() {
+      const aValues = [-6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6];
+      const bValues = [-9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+      const cValues = [2, 3, 4, 5, 6, 7, 8, 9];
+
+      state.a = randomChoice(aValues);
+      state.b = randomChoice(bValues);
+      state.c = randomChoice(cValues);
+      showAnswer.checked = false;
+      render();
+    }
+
+    function signedNumber(value) {
+      if (value === 0) return "";
+      return value > 0 ? `+${value}` : String(value);
+    }
+
+    function exponentText() {
+      const aPart = state.a === 1 ? "x" : state.a === -1 ? "-x" : `${state.a}x`;
+      return `${aPart}${signedNumber(state.b)}`;
+    }
+
+    function coefficientText(value) {
+      if (value === 1) return "";
+      if (value === -1) return "-";
+      return String(value);
+    }
+
+    function functionHtml() {
+      return `y = ${state.c}e<sup>${exponentText()}</sup>`;
+    }
+
+    function derivativeHtml() {
+      const coefficient = state.c * state.a;
+      return `<span class="frac" aria-label="dy over dx"><span class="top-frac">dy</span><span class="bottom-frac">dx</span></span> = ${coefficientText(coefficient)}e<sup>${exponentText()}</sup>`;
+    }
+
+    function render() {
+      questionText.innerHTML = `What is the derivative of <span class="math">${functionHtml()}</span> ?`;
+      answerText.innerHTML = derivativeHtml();
+      reasonText.innerHTML = `The outside coefficient ${state.c} is multiplied by the derivative of the exponent, ${state.a}, so the new coefficient is ${state.c * state.a}.`;
+      answerBox.classList.toggle("visible", showAnswer.checked);
+    }
+
+    newQuestion.addEventListener("click", generateQuestion);
+    showAnswer.addEventListener("change", render);
+    render();
+  </script>
+</body>
+</html>
